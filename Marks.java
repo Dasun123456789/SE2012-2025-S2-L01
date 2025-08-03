@@ -1,115 +1,84 @@
 import java.util.Scanner;
 
-public class Marks{
-    public static void main(String[] args){
+public class Marks {
+    static final int SUBJECTS = 3; // 1:Math, 2:Chemistry, 3:Physics
 
-        System.out.print("Enter number of student: ");
-        Scanner scanner = new Scanner(System.in);
-        int noOfStudents = scanner.nextInt();
-        int[][] marks = new int[noOfStudents][3];
-        String[] subjectName = {"Mathematics", "Chemistry", "Physics"};
-        for(int studentID = 0; studentID < noOfStudents; studentID++){
-            for(int subjectID = 0; subjectID < 3; subjectID++){
-                System.out.print("Enter marks for " + subjectName[subjectID] + " of student " + (studentID+1) + ": ");
-                marks[studentID][subjectID] = scanner.nextInt();
-            }
-        }
-        scanner.nextLine();
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of students: ");
+        int n = sc.nextInt();
+        int[][] marks = new int[n][SUBJECTS]; // marks[i][j] => j=0=Math, 1=Chem, 2=Phys
 
-        while(true){
+        while (true) {
             System.out.println("\nMenu:");
-            System.out.println("1. Get average for a subject");
-            System.out.println("2. Get average for a student");
-            System.out.println("3. Get total marks for a student");
-            System.out.println("4. Display grades");
-            System.out.println("5. Exit");
-            System.out.print("Enter your choice(1-5): ");
-            int choice = scanner.nextInt();
+            System.out.println("1. Add student marks: add [studentID]");
+            System.out.println("2. Update student mark: update [studentID] [subjectID]");
+            System.out.println("3. Get student average: average [studentID]");
+            System.out.println("4. Get subject average: average_s [subjectID]");
+            System.out.println("5. Get total of student: total [studentID]");
+            System.out.println("6. Exit");
+            System.out.print("Enter command: ");
+            String command = sc.next();
 
-            if(choice == 5){
+            if (command.equals("add")) {
+                int id = sc.nextInt();
+                if (id >= 1 && id <= n) {
+                    System.out.print("Enter marks for Math, Chemistry, Physics: ");
+                    for (int i = 0; i < SUBJECTS; i++) {
+                        marks[id - 1][i] = sc.nextInt();
+                    }
+                } else {
+                    System.out.println("Invalid student ID!");
+                }
+            } else if (command.equals("update")) {
+                int id = sc.nextInt();
+                int sub = sc.nextInt();
+                if (id >= 1 && id <= n && sub >= 1 && sub <= SUBJECTS) {
+                    System.out.print("Enter new mark: ");
+                    marks[id - 1][sub - 1] = sc.nextInt();
+                } else {
+                    System.out.println("Invalid student or subject ID!");
+                }
+            } else if (command.equals("average")) {
+                int id = sc.nextInt();
+                if (id >= 1 && id <= n) {
+                    int sum = 0;
+                    for (int i = 0; i < SUBJECTS; i++) {
+                        sum += marks[id - 1][i];
+                    }
+                    System.out.println("Average: " + (sum / 3.0));
+                } else {
+                    System.out.println("Invalid student ID!");
+                }
+            } else if (command.equals("average_s")) {
+                int sub = sc.nextInt();
+                if (sub >= 1 && sub <= SUBJECTS) {
+                    int sum = 0;
+                    for (int i = 0; i < n; i++) {
+                        sum += marks[i][sub - 1];
+                    }
+                    System.out.println("Average for Subject " + sub + ": " + (sum / (double) n));
+                } else {
+                    System.out.println("Invalid subject ID!");
+                }
+            } else if (command.equals("total")) {
+                int id = sc.nextInt();
+                if (id >= 1 && id <= n) {
+                    int sum = 0;
+                    for (int i = 0; i < SUBJECTS; i++) {
+                        sum += marks[id - 1][i];
+                    }
+                    System.out.println("Total Marks: " + sum);
+                } else {
+                    System.out.println("Invalid student ID!");
+                }
+            } else if (command.equals("6")) {
+                System.out.println("Exiting...");
                 break;
-            }
-
-
-            switch(choice){
-                case 1:
-                    System.out.print("Enter Subject ID (1-Math, 2-Chemistry, 3-Physics): ");
-                    int subjectID = scanner.nextInt() - 1;
-                    if(subjectID >= 0 && subjectID < 3){
-                        double sum_s = 0;
-                        for(int i = 0; i < noOfStudents; i++){
-                            sum_s += marks[i][subjectID];
-                        }
-                        double average_s = sum_s / noOfStudents;
-                        System.out.println("Average for " + subjectName[subjectID] + ": " + average_s);
-                    }
-                    else{
-                        System.out.println("Invalid subject ID.");
-                    }
-                    break;
-
-                case 2:
-                    System.out.print("Enter Student ID(1 to " + noOfStudents + "): ");
-                    int studentID = scanner.nextInt() - 1;
-                    if(studentID >= 0 && studentID < noOfStudents){
-                        double sum = 0;
-                        for(int i = 0; i < 3; i++){
-                            sum += marks[studentID][i];
-                        }
-                        double average = sum / 3;
-                        System.out.println("Average for Student " + (studentID + 1) + ": " + average);
-                    }
-                    else{
-                        System.out.println("Invalid student ID.");
-                    }
-                    break;
-
-                case 3:
-                    System.out.print("Enter Student ID (1 to " + noOfStudents + "): ");
-                    int totalID = scanner.nextInt() - 1;
-                    if(totalID >= 0 && totalID < noOfStudents){
-                        int total = 0;
-                        for(int i = 0; i < 3; i++){
-                            total += marks[totalID][i];
-                        }
-                        System.out.println("Total marks for Student " + (totalID + 1) + ": " + total);
-                    }
-                    else{
-                        System.out.println("Invalid student ID.");
-                    }
-                    break;
-                case 4:
-                    System.out.println("\nStudent Grades:");
-                    System.out.printf("%-10s%-15s%-15s%-15s%n", "Student", "Mathematics", "Chemistry", "Physics");
-                    for(int i = 0; i < noOfStudents; i++){
-                        System.out.printf("%-10s", "Student " + (i + 1));
-                        for(int j = 0; j < 3; j++){
-                            String grade;
-                            if(marks[i][j] >= 90){
-                                grade = "Grade A";
-                            }
-                            else if(marks[i][j] >= 80){
-                                grade = "Grade B";
-                            }
-                            else if(marks[i][j] >= 70){
-                                grade = "Grade C";
-                            }
-                            else if(marks[i][j] >= 60){
-                                grade = "Grade D";
-                            }
-                            else{
-                                grade = "Fail";
-                            }
-                            System.out.printf("%-15s", grade);
-                        }
-                        System.out.println();
-                    }
-                    break;
-
-                default:
-                    System.out.println("Invalid choice! Please enter 1-5.");
+            } else {
+                System.out.println("Invalid command!");
             }
         }
-        scanner.close();
+        sc.close();
     }
 }
